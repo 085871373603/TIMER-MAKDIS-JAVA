@@ -1,0 +1,49 @@
+
+name: Build TIMER MAXDIS APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check source ZIP
+        run: test -f TIMER_MAXDIS_JAVA_ANDROID_STUDIO.zip
+
+      - name: Extract Android project
+        run: unzip -q TIMER_MAXDIS_JAVA_ANDROID_STUDIO.zip -d source
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle 8.9
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK packages
+        run: sdkmanager --install "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Run tests and build APK
+        working-directory: source/TIMER_MAXDIS_JAVA
+        run: gradle :app:testDebugUnitTest :app:assembleDebug
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TIMER-MAXDIS-debug-apk
+          path: source/TIMER_MAXDIS_JAVA/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
