@@ -1,0 +1,22 @@
+# Gradle / Android Studio
+.gradle/
+.idea/
+*.iml
+/build/
+/app/build/
+build/
+/local.properties
+/captures/
+.externalNativeBuild/
+.cxx/
+
+# Hasil build & kunci penandatanganan (JANGAN pernah di-commit)
+*.apk
+*.aab
+*.ap_
+*.keystore
+*.jks
+
+# OS
+.DS_Store
+Thumbs.db
